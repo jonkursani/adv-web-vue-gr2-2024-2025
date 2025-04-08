@@ -2,7 +2,8 @@
 
 <!-- JavaScript -->
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
+import Detyra1 from '@/components/detyra/Detyra1.vue'
 
 // Variabla reaktive
 const message = ref('Hello from Vue 3')
@@ -87,6 +88,52 @@ const user = reactive({
 // user: {}
 
 console.log(user.id)
+
+// computed properties
+const author = reactive({
+  name: 'Filan Fisteku',
+  books: [
+    { title: 'Vue.js 3', year: 2020 },
+    { title: 'JavaScript', year: 2021 },
+  ],
+})
+
+const hasPublishedBooks = computed(() => {
+  return author.books.length > 0 ? 'Yes' : 'No'
+})
+
+const randomPlaceComputed = computed(() => {
+  return Math.random() > 0.5 ? 'Go to gym' : 'Drink coffe'
+})
+
+// Class and style binding
+const isActive = ref(true)
+const hasError = ref(false)
+const classObject = reactive({
+  active: true,
+  'text-danger': false,
+})
+
+const isCompleted = ref(false)
+const classObjectComputed = computed(() => {
+  return {
+    // completed: isCompleted.value === true,
+    completed: isCompleted.value,
+    'text-danger': !isCompleted.value, // && hasError.value,
+    // 'text-danger': isCompleted.value === false,
+  }
+})
+
+const activeClass = ref('active')
+const errorClass = ref('text-danger')
+
+// bind style attribute
+const colorRed = ref('red')
+const upperCase = ref('uppercase')
+const styleObject = reactive({
+  color: 'red',
+  textTransform: 'uppercase',
+})
 </script>
 
 <!-- HTML -->
@@ -140,7 +187,43 @@ console.log(user.id)
 
   <input type="text" placeholder="First name" :value="firstName" @keyup.enter="confirmFirstName" />
   <input type="text" placeholder="Confirmed first name" :value="confirmedFirstName" />
+
+  <!-- Computed -->
+  <!-- <p>Has published books: {{ author.books.length > 0 ? 'Yes' : 'No' }}</p> -->
+  <p>Has published books: {{ hasPublishedBooks }}</p>
+  <p>Random place: {{ randomPlaceComputed }}</p>
+
+  <!-- Class and style binding -->
+  <!-- 'active' emri i klases ne css, 'isActive' emri i variables -->
+  <p class="emri-klases" :class="{ active: isActive, 'text-danger': hasError }">
+    Class and style binding
+  </p>
+  <p :class="classObject">Class object</p>
+  <p :class="classObjectComputed">Computed styling</p>
+  <button @click="isCompleted = !isCompleted">Toggle completed</button>
+
+  <!-- Binding to array -->
+  <p :class="['active', 'text-danger']">Binding to array</p>
+  <p :class="[activeClass, errorClass]">Binding to array</p>
+  <p :class="[isCompleted ? 'completed' : '', activeClass]">Binding to array</p>
+  <p :style="{ color: colorRed, textTransform: upperCase }">Style binding</p>
+  <p :style="styleObject">Style binding object</p>
+
+  <Detyra1 />
 </template>
 
 <!-- CSS, scoped kodi i css aplikohet vetem ne kete file -->
-<style scoped></style>
+<style scoped>
+.active {
+  font-weight: bold;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: green;
+}
+
+.text-danger {
+  color: red;
+}
+</style>
