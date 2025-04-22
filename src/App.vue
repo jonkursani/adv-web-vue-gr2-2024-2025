@@ -4,6 +4,9 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import Detyra1 from '@/components/detyra/Detyra1.vue'
+// Import local i komponentes
+import ChildComp from '@/components/ChildComp.vue'
+import ListPeople from '@/components/ListPeople.vue'
 
 // Variabla reaktive
 const message = ref('Hello from Vue 3')
@@ -214,6 +217,17 @@ const options = ref([
   { val: 'd', text: 'D' },
 ])
 const number = ref(null)
+
+// Components
+// emri parametrit sipas deshires, te ky parameter mapohet vlera e derguar prej comp child
+const handleChildEvent = (msg) => {
+  // alert(msg)
+  alert(`${msg.name} is ${msg.age} years old`)
+}
+
+const onDeletePerson = (id) => {
+  alert(`Delete person with id: ${id}`)
+}
 </script>
 
 <!-- HTML -->
@@ -439,6 +453,27 @@ const number = ref(null)
       11. array-in shfaqeni ne nje tabele (v-for)
 
   -->
+
+  <h3>Components</h3>
+
+  <!-- <ChildComp name="Arber" /> -->
+  <!-- <child-comp name="Anda" :age="20" /> -->
+  <child-comp :user="{ name: 'Filan', age: 30 }" @child-event="handleChildEvent" />
+
+  <!-- 
+    Te dhenat qe i keni ruajt ne objekt me i dergu si prop me nje komponente te re qe
+    ka me bo shfaqjen e te dhenave 
+    emit butonin delete qe e emit nje event te comp prind me index ose id te rreshtit qe e keni klikuar 
+  -->
+
+  <list-people
+    :people="[
+      { id: 1, name: 'Jane Doe', age: 25 },
+      { id: 2, name: 'John Doe', age: 30 },
+      { id: 3, name: 'Mary Jane', age: 35 },
+    ]"
+    @delete-person="onDeletePerson"
+  />
 </template>
 
 <!-- CSS, scoped kodi i css aplikohet vetem ne kete file -->
