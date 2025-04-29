@@ -13,7 +13,7 @@ const app = createApp(App)
 
 // parametri i pare eshte emri qysh i referohemi ne html, i dyti eshte komponenta
 app.component('ChildComp', ChildComp)
-app.use(createPinia())
+app.use(createPinia()) // perdore store
 app.use(router) // perdore routerin
 
 // SPA - single page application
