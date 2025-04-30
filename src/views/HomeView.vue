@@ -517,6 +517,8 @@ const store = useCounterStore()
        Definojeni nje store te ri usePeopleStore qe permban metodat per addPerson, updatePerson, deletePerson
        array-in e personave e ruani ne store
    -->
+
+  <router-link :to="{ name: 'people' }">List of peoples</router-link>
 </template>
 
 <!-- CSS, scoped kodi i css aplikohet vetem ne kete file -->
