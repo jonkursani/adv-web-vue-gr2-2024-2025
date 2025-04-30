@@ -1,6 +1,7 @@
-<script setup></script>
+<script setup>
+import TheLayout from '@/components/ui/TheLayout.vue'
+</script>
 
 <template>
-  <!-- Tag special qe na e ben renderimin e views -->
-  <router-view />
+  <the-layout />
 </template>
