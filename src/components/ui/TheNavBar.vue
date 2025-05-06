@@ -1,4 +1,15 @@
-<script setup></script>
+<script setup>
+import { useAuthStore } from '@/stores/auth.js'
+import { useRouter } from 'vue-router'
+
+const authStore = useAuthStore()
+const router = useRouter()
+
+const onLogout = () => {
+  authStore.logOut()
+  router.push({ name: 'login' })
+}
+</script>
 
 <template>
   <header class="mb-3">
@@ -24,7 +35,7 @@
             <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
               <div class="user-menu d-flex">
                 <div class="user-name text-end me-3">
-                  <h6 class="mb-0 text-gray-600">John Ducky</h6>
+                  <h6 class="mb-0 text-gray-600">{{ authStore.loggedInUser?.sub }}</h6>
                   <p class="mb-0 text-sm text-gray-600">Administrator</p>
                 </div>
                 <div class="user-img d-flex align-items-center">
@@ -61,9 +72,9 @@
                 <hr class="dropdown-divider" />
               </li>
               <li>
-                <a class="dropdown-item" href="#"
-                  ><i class="icon-mid bi bi-box-arrow-left me-2"></i> Logout</a
-                >
+                <button class="dropdown-item" @click="onLogout">
+                  <i class="icon-mid bi bi-box-arrow-left me-2"></i> Logout
+                </button>
               </li>
             </ul>
           </div>
