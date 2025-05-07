@@ -1,30 +1,43 @@
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
+import { useAppToast } from '@/composables/useAppToast.js'
+import AppButton from '@/components/ui/AppButton.vue'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+const isLoading = ref(false)
 
 const user = reactive({
   email: '',
   password: '',
 })
 
+const toast = useAppToast()
+// const {showSuccess} = useAppToast()
+
 const handleSubmit = async () => {
   try {
     if (!user.email || !user.password) {
-      alert('Please fill in all fields')
+      // alert('Please fill in all fields')
+      toast.showWarning('Please fill in all fields')
       return
     }
 
+    isLoading.value = true
     await authStore.logIn(user)
     const redirectUrl = `${route.query.redirect || '/'}`
     await router.push(redirectUrl)
   } catch (e) {
-    console.error(e)
-    alert('Login failed. Please check your credentials.')
+    // console.error(e)
+    // alert('Login failed. Please check your credentials.')
+    // errorit te axios
+    // toast.showError(e.response?.data?.message || 'Login failed. Please check your credentials.')
+    throw e
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
@@ -66,7 +79,12 @@ const handleSubmit = async () => {
               </div>
             </div>
 
-            <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>
+            <app-button
+              class="btn btn-primary btn-block btn-lg shadow-lg mt-5"
+              :is-loading="isLoading"
+            >
+              Log in
+            </app-button>
           </form>
           <div class="text-center mt-5 text-lg fs-4">
             <p class="text-gray-600">
