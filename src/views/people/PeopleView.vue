@@ -1,6 +1,14 @@
 <script setup>
 import { usePeopleStore } from '@/stores/people'
 import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+import DataTable from 'datatables.net-vue3';
+import DataTablesCore from 'datatables.net';
+import DataTablesBS5 from 'datatables.net-bs5';
+
+// Initialize DataTables with Bootstrap 5 styles
+DataTable.use(DataTablesCore);
+DataTable.use(DataTablesBS5);
 
 const store = usePeopleStore()
 
@@ -14,6 +22,12 @@ const onDeletePerson = (id) => {
     // Call the delete method from the store
   }
 }
+
+// lifecycle hooks (metoda)
+// inicializohet ne dom
+onMounted(() => {
+  new DataTablesCore('#people')
+})
 </script>
 
 <template>
@@ -24,7 +38,7 @@ const onDeletePerson = (id) => {
     <div class="card-body">
       <router-link :to="{ name: 'add-person' }">Add person</router-link>
 
-      <table class="table table-striped table-bordered">
+      <table id="people" class="table table-striped table-bordered">
         <thead>
           <tr>
             <th>#</th>

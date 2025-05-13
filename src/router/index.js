@@ -1,13 +1,12 @@
 import AboutView from '@/views/AboutView.vue'
 import HomeView from '@/views/HomeView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
-import AddPersonView from '@/views/people/AddPersonView.vue'
-import PeopleView from '@/views/people/PeopleView.vue'
-import UpdatePersonView from '@/views/people/UpdatePersonView.vue'
 import UserView from '@/views/UserView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import AuthView from '@/views/auth/AuthView.vue'
 import { useAuthStore } from '@/stores/auth.js'
+import DepartmentRoutes from '@/router/departmentRoutes.js'
+import PeopleRoutes from '@/router/peopleRoutes.js'
 
 const routes = [
   {
@@ -46,30 +45,14 @@ const routes = [
       requiresAuth: true,
     }
   },
-  {
-    path: '/people',
-    name: 'people',
-    component: PeopleView,
-    meta: {
-      requiresAuth: true,
-    }
-  },
-  {
-    path: '/people/add',
-    name: 'add-person',
-    component: AddPersonView,
-    meta: {
-      requiresAuth: true,
-    }
-  },
-  {
-    path: '/people/:id',
-    name: 'update-person',
-    component: UpdatePersonView,
-    meta: {
-      requiresAuth: true,
-    }
-  },
+  // (...) spread operator iu ndihmon me i marr objektet prej file-it tjeter
+  ...PeopleRoutes,
+  ...DepartmentRoutes,
+  // {
+  //   path: '/departments',
+  //   name: 'departments',
+  //   component: DepartmentsView,
+  // },
   // catch all route
   {
     path: '/:notFound(.*)*',

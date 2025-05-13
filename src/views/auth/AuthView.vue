@@ -4,11 +4,12 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
 import { useAppToast } from '@/composables/useAppToast.js'
 import AppButton from '@/components/ui/AppButton.vue'
+import { useLoading } from '@/composables/useLoading,.js'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
-const isLoading = ref(false)
+// const isLoading = ref(false)
 
 const user = reactive({
   email: '',
@@ -17,28 +18,37 @@ const user = reactive({
 
 const toast = useAppToast()
 // const {showSuccess} = useAppToast()
+// const loadingHelper = useLoading()
+// loadingHelper.isLoading
+const { isLoading, withLoading } = useLoading()
 
 const handleSubmit = async () => {
-  try {
-    if (!user.email || !user.password) {
-      // alert('Please fill in all fields')
-      toast.showWarning('Please fill in all fields')
-      return
-    }
+  if (!user.email || !user.password) {
+    // alert('Please fill in all fields')
+    toast.showWarning('Please fill in all fields')
+    return
+  }
 
-    isLoading.value = true
+  // try {
+  //   isLoading.value = true
+  //   await authStore.logIn(user)
+  //   const redirectUrl = `${route.query.redirect || '/'}`
+  //   await router.push(redirectUrl)
+  // } catch (e) {
+  //   // console.error(e)
+  //   // alert('Login failed. Please check your credentials.')
+  //   // errorit te axios
+  //   // toast.showError(e.response?.data?.message || 'Login failed. Please check your credentials.')
+  //   throw e
+  // } finally {
+  //   isLoading.value = false
+  // }
+
+  await withLoading(async () => {
     await authStore.logIn(user)
     const redirectUrl = `${route.query.redirect || '/'}`
     await router.push(redirectUrl)
-  } catch (e) {
-    // console.error(e)
-    // alert('Login failed. Please check your credentials.')
-    // errorit te axios
-    // toast.showError(e.response?.data?.message || 'Login failed. Please check your credentials.')
-    throw e
-  } finally {
-    isLoading.value = false
-  }
+  })
 }
 </script>
 
