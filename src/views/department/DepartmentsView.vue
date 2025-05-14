@@ -7,6 +7,8 @@ import DataTablesCore from 'datatables.net'
 import DataTablesBS5 from 'datatables.net-bs5'
 import { useLoading } from '@/composables/useLoading,.js'
 import AppSpinner from '@/components/ui/AppSpinner.vue'
+import AppButton from '@/components/ui/AppButton.vue'
+import { useAppToast } from '@/composables/useAppToast.js'
 
 // Initialize DataTables with Bootstrap 5 styles
 DataTable.use(DataTablesCore)
@@ -36,17 +38,33 @@ onMounted(async () => {
   await loadDepartments()
   new DataTablesCore('#departments')
 })
+
+const { showSuccess } = useAppToast()
+const onDelete = async (id) => {
+  if (confirm('Are you sure you want to delete this department?')) {
+    await withLoading(async () => {
+      const response = await DepartmentService.deleteDepartment(id)
+      if (response) {
+        showSuccess('Department deleted successfully')
+        await loadDepartments()
+      }
+    })
+  }
+}
 </script>
 
 <template>
   <app-card>
     <template #header>
-      <h5>Departments</h5>
+      <div class="d-flex justify-content-between">
+        <h5>Departments</h5>
+        <router-link :to="{ name: 'create-department' }" class="btn btn-primary">Add</router-link>
+      </div>
     </template>
 
     <!--    {{ departments }}-->
     <div class="text-center" v-if="isLoading">
-<!--      Loading...-->
+      <!--      Loading...-->
       <app-spinner :is-loading="isLoading" />
     </div>
     <table id="departments" class="table table-bordered table-striped" v-else>
@@ -55,6 +73,7 @@ onMounted(async () => {
           <th>#</th>
           <th>Name</th>
           <th>Location</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -62,6 +81,17 @@ onMounted(async () => {
           <td>{{ dep.id }}</td>
           <td>{{ dep.name }}</td>
           <td>{{ dep.location }}</td>
+          <td>
+            <router-link
+              :to="{ name: 'update-department', params: { id: dep.id } }"
+              class="btn btn-secondary"
+            >
+              <i class="bi bi-pencil"></i>
+            </router-link>
+            <app-button class="btn btn-danger ms-2" @click="onDelete(dep.id)">
+              <i class="bi bi-trash"></i>
+            </app-button>
+          </td>
         </tr>
       </tbody>
     </table>
