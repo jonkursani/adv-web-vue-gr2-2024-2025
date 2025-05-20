@@ -7,6 +7,7 @@ import AuthView from '@/views/auth/AuthView.vue'
 import { useAuthStore } from '@/stores/auth.js'
 import DepartmentRoutes from '@/router/departmentRoutes.js'
 import PeopleRoutes from '@/router/peopleRoutes.js'
+import EmployeeRoutes from '@/router/employeeRoutes.js'
 
 const routes = [
   {
@@ -48,6 +49,7 @@ const routes = [
   // (...) spread operator iu ndihmon me i marr objektet prej file-it tjeter
   ...PeopleRoutes,
   ...DepartmentRoutes,
+  ...EmployeeRoutes,
   // {
   //   path: '/departments',
   //   name: 'departments',
