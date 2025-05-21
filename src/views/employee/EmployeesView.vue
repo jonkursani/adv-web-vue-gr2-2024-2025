@@ -57,7 +57,10 @@ onMounted(async () => {
 <template>
   <app-card>
     <template #header>
-      <h5>Employees</h5>
+      <div class="d-flex justify-content-between">
+        <h5>Employees</h5>
+        <router-link :to="{ name: 'create-employee' }" class="btn btn-primary">Add</router-link>
+      </div>
     </template>
 
     <!--    {{ employees }}-->
@@ -97,7 +100,7 @@ onMounted(async () => {
         <router-link to="" class="btn btn-outline-primary">
           <i class="bi bi-pencil"></i>
         </router-link>
-<!--        <app-button class="btn btn-danger ms-2" @click="() => console.log(variabla.rreshti.id)">-->
+        <!--        <app-button class="btn btn-danger ms-2" @click="() => console.log(variabla.rreshti.id)">-->
         <app-button class="btn btn-danger ms-2" @click="() => console.log(rreshti.id)">
           <i class="bi bi-trash"></i>
         </app-button>
