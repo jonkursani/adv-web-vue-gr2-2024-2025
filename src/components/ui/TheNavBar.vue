@@ -1,6 +1,8 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth.js'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { ref } from 'vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -8,6 +10,20 @@ const router = useRouter()
 const onLogout = () => {
   authStore.logOut()
   router.push({ name: 'login' })
+}
+
+const i18n = useI18n()
+const locales = {
+  sq: 'sq',
+  en: 'en',
+}
+const locale = ref(i18n.locale.value)
+const localeOptions = ref(Object.values(locales)) // ['sq', 'en']
+const changeLocale = (newLocale) => {
+  i18n.locale.value = newLocale
+  locale.value = newLocale
+  // Optionally, you can save the selected locale to localStorage or a cookie
+  // localStorage.setItem('app-locale', newLocale)
 }
 </script>
 
@@ -31,12 +47,34 @@ const onLogout = () => {
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <div class="dropdown ms-auto">
+          <ul class="navbar-nav ms-auto mb-lg-0 me-3">
+            <li class="nav-item dropdown me-1">
+              <a
+                class="nav-link active dropdown-toggle text-gray-600"
+                href="#"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-globe bi-sub fs-4"></i> <strong>{{ locale.toUpperCase() }}</strong>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                <li>
+                  <h6 class="dropdown-header">{{ $t('common.select_language') }}</h6>
+                </li>
+                <li v-for="loc in localeOptions" :key="loc">
+                  <a class="dropdown-item" @click="changeLocale(loc)">
+                    {{ loc.toUpperCase() }}
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <div class="dropdown">
             <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
               <div class="user-menu d-flex">
                 <div class="user-name text-end me-3">
                   <h6 class="mb-0 text-gray-600">{{ authStore.loggedInUser?.sub }}</h6>
-                  <p class="mb-0 text-sm text-gray-600">Administrator</p>
+                  <p class="mb-0 text-sm text-gray-600">{{ authStore.loggedInUser?.role }}</p>
                 </div>
                 <div class="user-img d-flex align-items-center">
                   <div class="avatar avatar-md">
@@ -51,7 +89,7 @@ const onLogout = () => {
               style="min-width: 11rem"
             >
               <li>
-                <h6 class="dropdown-header">Hello, John!</h6>
+                <h6 class="dropdown-header">Hello, {{ authStore.loggedInUser?.name }}!</h6>
               </li>
               <li>
                 <a class="dropdown-item" href="#"

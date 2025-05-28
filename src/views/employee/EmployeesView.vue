@@ -6,6 +6,8 @@ import AppSpinner from '@/components/ui/AppSpinner.vue'
 import AppDatatable from '@/components/ui/AppDatatable.vue'
 import AppButton from '@/components/ui/AppButton.vue'
 import { useAppToast } from '@/composables/useAppToast.js'
+import { useAdministration } from '@/composables/useAdministration.js'
+import { useI18n } from 'vue-i18n'
 // import DataTable from 'datatables.net-vue3'
 // import DataTablesCore from 'datatables.net'
 // import DataTablesBS5 from 'datatables.net-bs5'
@@ -51,9 +53,7 @@ const loadEmployees = async () => {
 
 const { showDialog, showSuccess } = useAppToast()
 const onDeleteEmp = async (id) => {
-  const result = await showDialog(
-    `Are you sure you want to delete this employee?`,
-  )
+  const result = await showDialog(`Are you sure you want to delete this employee?`)
 
   if (result.isConfirmed) {
     try {
@@ -71,19 +71,29 @@ const onDeleteEmp = async (id) => {
   }
 }
 
+const { isAdmin, isManager } = useAdministration()
+
 onMounted(async () => {
   await loadEmployees()
   // new DataTablesCore('#employees')
 })
+
+const apiUrl = import.meta.env.VITE_API_URL
 </script>
 
 <template>
   <transition appear>
     <app-card>
+      API URL: {{ apiUrl }}
+      <br />
+      <!-- $t mundemi me perdor vetem ne template jo ne script -->
+      {{ $t('common.text') }}
       <template #header>
         <div class="d-flex justify-content-between">
-          <h5>Employees</h5>
-          <router-link :to="{ name: 'create-employee' }" class="btn btn-primary">Add</router-link>
+          <h5>{{ $t('employee.title') }}</h5>
+          <router-link :to="{ name: 'create-employee' }" class="btn btn-primary">
+            {{ $t('buttons.add') }}
+          </router-link>
         </div>
       </template>
 
@@ -124,11 +134,12 @@ onMounted(async () => {
           <router-link
             :to="{ name: 'update-employee', params: { id: rreshti.id } }"
             class="btn btn-outline-primary"
+            v-if="isManager || isAdmin"
           >
             <i class="bi bi-pencil"></i>
           </router-link>
           <!--        <app-button class="btn btn-danger ms-2" @click="() => console.log(variabla.rreshti.id)">-->
-          <app-button class="btn btn-danger ms-2" @click="onDeleteEmp(rreshti.id)">
+          <app-button class="btn btn-danger ms-2" @click="onDeleteEmp(rreshti.id)" v-if="isAdmin">
             <i class="bi bi-trash"></i>
           </app-button>
         </template>

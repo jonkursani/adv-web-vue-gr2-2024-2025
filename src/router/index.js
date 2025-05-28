@@ -8,6 +8,10 @@ import { useAuthStore } from '@/stores/auth.js'
 import DepartmentRoutes from '@/router/departmentRoutes.js'
 import PeopleRoutes from '@/router/peopleRoutes.js'
 import EmployeeRoutes from '@/router/employeeRoutes.js'
+import AdminView from '@/views/AdminView.vue'
+import { ROLES } from '@/composables/useAdministration.js'
+import ManagerView from '@/views/ManagerView.vue'
+import AccessDeniedView from '@/views/AccessDeniedView.vue'
 
 const routes = [
   {
@@ -16,7 +20,7 @@ const routes = [
     component: AuthView,
     meta: {
       requiresAuth: false,
-    }
+    },
   },
   {
     path: '/',
@@ -24,7 +28,7 @@ const routes = [
     component: HomeView,
     meta: {
       requiresAuth: true,
-    }
+    },
   },
   {
     path: '/home',
@@ -36,7 +40,7 @@ const routes = [
     component: AboutView,
     meta: {
       requiresAuth: true,
-    }
+    },
   },
   {
     path: '/user/:id',
@@ -44,7 +48,7 @@ const routes = [
     component: UserView,
     meta: {
       requiresAuth: true,
-    }
+    },
   },
   // (...) spread operator iu ndihmon me i marr objektet prej file-it tjeter
   ...PeopleRoutes,
@@ -55,6 +59,30 @@ const routes = [
   //   name: 'departments',
   //   component: DepartmentsView,
   // },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: AdminView,
+    meta: {
+      requiresAuth: true,
+      roles: [ROLES.ADMIN],
+    },
+  },
+  {
+    path: '/manager',
+    name: 'manager',
+    component: ManagerView,
+    meta: {
+      requiresAuth: true,
+      roles: [ROLES.MANAGER, ROLES.ADMIN],
+    },
+  },
+  {
+    path: '/access-denied',
+    name: 'access-denied',
+    component: AccessDeniedView,
+    meta: { requiresAuth: true },
+  },
   // catch all route
   {
     path: '/:notFound(.*)*',
@@ -62,7 +90,7 @@ const routes = [
     component: NotFoundView,
     meta: {
       requiresAuth: true,
-    }
+    },
   },
 ]
 
@@ -77,17 +105,27 @@ router.beforeEach((to, from) => {
 
   const authStore = useAuthStore()
 
+  if (to.meta.roles && to.meta.roles.length > 0 && authStore.isLoggedIn) {
+    const isAllowed = to.meta.roles.includes(authStore.loggedInUser?.role)
+
+    if (!isAllowed) {
+      return {
+        name: 'access-denied',
+      }
+    }
+  }
+
   // Check if the route requires authentication
   if (to.meta.requiresAuth && !authStore.isLoggedIn) {
     // Redirect to the login page if not authenticated
     return {
       name: 'login',
-      query: { redirect: to.fullPath }
+      query: { redirect: to.fullPath },
     }
   } else if (!to.meta.requiresAuth && authStore.isLoggedIn) {
     // Redirect to the home page if authenticated and trying to access login page
     return {
-      name: 'home'
+      name: 'home',
     }
   }
 })

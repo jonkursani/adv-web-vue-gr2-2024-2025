@@ -12,6 +12,7 @@ import App from './App.vue'
 import router from './router'
 // import global i komponentes
 import ChildComp from '@/components/ChildComp.vue'
+import i18n from '@/locales/i18n.js'
 
 // creates vue application
 const app = createApp(App)
@@ -20,6 +21,7 @@ const app = createApp(App)
 app.component('ChildComp', ChildComp)
 app.use(createPinia()) // perdore store
 app.use(router) // perdore routerin
+app.use(i18n)
 
 // SPA - single page application
 // mounts the app to the DOM

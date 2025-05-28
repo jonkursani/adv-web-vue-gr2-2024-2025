@@ -1,6 +1,7 @@
 import EmployeesView from '@/views/employee/EmployeesView.vue'
 import CreateEmployeeView from '@/views/employee/CreateEmployeeView.vue'
 import UpdateEmployeeView from '@/views/employee/UpdateEmployeeView.vue'
+import { ROLES } from '@/composables/useAdministration.js'
 
 export default [
   {
@@ -19,6 +20,9 @@ export default [
     path: '/employees/update/:id',
     name: 'update-employee',
     component: UpdateEmployeeView,
-    meta: { requiresAuth: true },
-  }
+    meta: {
+      requiresAuth: true,
+      roles: [ROLES.ADMIN, ROLES.MANAGER],
+    },
+  },
 ]
